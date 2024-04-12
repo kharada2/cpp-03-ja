@@ -8,16 +8,10 @@
 
 #include <type_traits>
 
-template<typename T, typename ExpectedType>
-struct is_same_return_type : std::false_type {};
-
-template<typename T, typename R, typename... Args, typename ExpectedType>
-struct is_same_return_type<R(T::*)(Args...) const, ExpectedType> : std::is_same<R, ExpectedType> {};
-
 TEST(TypeCheckTests, CheckReturnTypes) {
-    static_assert(is_same_return_type<decltype(&CPUTemperature::read), temperature::kelvin>::value, "CPUTemperature::read must return temperature::kelvin");
-    static_assert(is_same_return_type<decltype(&CabinTemperature::read), temperature::kelvin>::value, "CabinTemperature::read must return temperature::kelvin");
-    static_assert(is_same_return_type<decltype(&TirePressure::read), pressure::psi>::value, "TirePressure::read must return pressure::psi");
+    static_assert(std::is_same_v<decltype(CPUTemperature().read()), temperature::kelvin>, "CPUTemperature::read must return temperature::kelvin");
+    static_assert(std::is_same_v<decltype(CabinTemperature().read()), temperature::kelvin>, "CabinTemperature::read must return temperature::kelvin");
+    static_assert(std::is_same_v<decltype(TirePressure().read()), pressure::psi>, "TirePressure::read must return pressure::psi");
 }
 
 TEST(SensorTests, CPUTemperatureRead) {
